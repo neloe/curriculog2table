@@ -1,4 +1,3 @@
-
 async function fmt_row(proposal, count=-1)
 {
     let proposal_id = proposal.id.split('-')[1]
@@ -54,6 +53,11 @@ async function fmt_row(proposal, count=-1)
 
 async function build_table()
 {
+    if (document.getElementById("tablemodal"))
+    {
+        document.getElementById("tablemodal").style.display="block"
+        return
+    }
     let proposals = document.getElementById('curriculog-list-column-results-content').getElementsByClassName('status-active')
     //let iframe = document.createElement('iframe')
     let table = document.createElement('table')
@@ -61,18 +65,57 @@ async function build_table()
     {
         table.appendChild(await fmt_row(proposals[idx], idx+1))
     }
-    let win = window.open()
-    win.document.body.innerHTML = table.outerHTML
-    return table.outerHTML
-    //iframe.appendChild(table)
-    //let newWindow = window.open()
-    //newWindow.document.body.innderHTML = table.outerHTML
-    //return table.outerHTML
-    //newWindow.document.write(iframe[0].outerHTML);
-    //newWindow.document.close();
+    let modal = document.createElement('div')
+    let modal_content = document.createElement('div')
+    modal.id = "tablemodal"
+    modal.style.display="none" 
+    modal.style.position="fixed" 
+    modal.style["background-color"]="rgba(0,0,0,0.4)" 
+    modal.style.overflow="auto" 
+    modal.style.height="100%" 
+    modal.style.width="100%" 
+    modal.style.top=0 
+    modal.style.left = 0 
+    modal.style["z-index"] = 1 
+    document.body.appendChild(modal)
+
+    modal_content.style["background-color"] = "#fefefe"
+    modal_content.style.margin= "15% auto"
+    modal_content.style.padding="20px"
+    modal_content.style.border = "1px solid #888"
+    modal_content.style.width="80%"
+
+    
+
+    let closebtn = document.createElement('span')
+    closebtn.style.color="#aaa"
+    closebtn.style.float="right"
+    closebtn.style["font-size"] = "28px"
+    closebtn.style["font-weight"] = "bold"
+    closebtn.innerHTML="&times;"
+
+    closebtn.onclick = function() {
+        document.getElementById("tablemodal").style.display="none"
+    }
+
+    modal_content.appendChild(closebtn)
+    modal_content.appendChild(table)
+    modal.appendChild(modal_content)
+    modal.style.display="block"
+
+
 }
 
-await build_table()
+if (! document.getElementById('tableviewbtn'))
+{
+    let tvbtn = document.createElement("button")
+    tvbtn.innerHTML="Create Table View"
+    tvbtn.id = 'tableviewbtn'
+    tvbtn.onclick=async() => {await build_table()}
+    document.getElementById("curriculog-fields-column-content").appendChild(tvbtn)
+}
+
+//await build_table()
 //let proposals = document.getElementById('curriculog-list-column-results-content').getElementsByClassName('status-active') 
 //let proposal_name = proposals[0].getElementsByClassName('list-name')[0].textContent.trim()
 //let purl = 'https://nwmissouri.curriculog.com/proposal:'+proposals[0].id.split('-')[1]+'/form' 

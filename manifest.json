@@ -1,0 +1,13 @@
+{
+    "manifest_version": 3,
+    "name": "Curriculog agenda summarizer",
+    "version": "1.0",
+    "description": "Generates a tabular view of a curriculog agenda",
+    "content_scripts": [
+        {
+            "matches": ["*://nwmissouri.curriculog.com/agenda:*/form"],
+            "js": ["curriculog-agenda-summary.js"]
+        }
+    ]
+
+}
